@@ -47,7 +47,8 @@
     const list = document.getElementById('transactionsList');
     list.innerHTML = '';  // clear prior
     try {
-      const res = await fetch('/api/transactions');
+      const userId = {{ user['_id'] | string | tojson }};
+      const res = await fetch(`/api/transactions/${userId}`);
       if (!res.ok) throw new Error(await res.text());
       const data = await res.json();
   
@@ -56,7 +57,7 @@
       } else {
         data.forEach(group => {
           const monthDiv = document.createElement('div');
-          monthDiv.innerHTML = `<h4>${group.month}</h4>` +
+          monthDiv.innerHTML = `<h4>${group.monthYear || group.month || 'Transaction History'}</h4>` +
             group.transactions.map(t =>
               `<p>${new Date(t.date).toLocaleString()}: ${t.type} $${t.amount.toFixed(2)}</p>`
             ).join('');
